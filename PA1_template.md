@@ -9,9 +9,6 @@ dataset_path = paste(getwd(),dataset_filename,sep="")
 
 # loading data from file
 dt = read.csv(dataset_path)
-
-# transform date formt into timestamp
-#dt[,2] = as.numeric(as.POSIXct(dt[,2]))
 ```
 
 ## What is mean total number of steps taken per day?
@@ -58,6 +55,7 @@ plot(tab[,1],tab[,2], type="l", xlab = "Intervals", ylab = "Average")
 ## Imputing missing values
 
 ```r
+# Total number of missing values
 sum(is.na(dt$steps))
 ```
 
@@ -105,6 +103,8 @@ median(tab[,2])
 library (lattice)
 
 w = weekdays.POSIXt(as.POSIXct(dt$date))
+
+# it must change to your language
 weekend = w == 'sábado' | w == 'domingo'
 
 w[weekend] = "weekend"
@@ -112,7 +112,6 @@ w[!weekend] = "weekday"
 
 tab = aggregate(dt[, 1], list(w, dt[,3]), mean )
 
-#tab = aggregate(dt[!weekend, 1], list(dt[!weekend,3]), mean )
 xyplot(x ~ Group.2 | Group.1, data = tab, type="l"  ,xlab = "Interval", ylab = "Number of steps", layout=c(1,2))
 ```
 
