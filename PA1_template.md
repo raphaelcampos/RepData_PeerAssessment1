@@ -16,10 +16,9 @@ dt = read.csv(dataset_path)
 
 ```r
 # summing up the total steps taken per day
-tab = aggregate(dt[!is.na(dt$steps), 1], list(dt[!is.na(dt$steps),2]), sum)
+tab = aggregate(dt[, 1], list(dt[,2]), sum, na.rm = TRUE)
 
-barplot(tab[,2], main="steps taken per day",
-   xlab="Days", ylab = "Total steps")
+hist(tab[,2], xlab = "number of steps", main = "Histogram of the total number of steps taken each day")
 ```
 
 ![](PA1_template_files/figure-html/steps_day-1.png) 
@@ -30,7 +29,7 @@ mean(tab[,2])
 ```
 
 ```
-## [1] 10766.19
+## [1] 9354.23
 ```
 
 ```r
@@ -39,7 +38,7 @@ median(tab[,2])
 ```
 
 ```
-## [1] 10765
+## [1] 10395
 ```
 
 ## What is the average daily activity pattern?
@@ -51,6 +50,15 @@ plot(tab[,1],tab[,2], type="l", xlab = "Intervals", ylab = "Average")
 ```
 
 ![](PA1_template_files/figure-html/daily_activity-1.png) 
+
+```r
+# Interval with maximum number of steps
+tab[which.max(tab[,2]),1]
+```
+
+```
+## [1] 835
+```
 
 ## Imputing missing values
 
@@ -66,15 +74,15 @@ sum(is.na(dt$steps))
 ```r
 j = 1
 for(i in tab[,1]){
+  # Filling in with the mean for jth 5-minute interval
   dt$steps[is.na(dt$steps) & dt$interval == i] = tab[j,2]
   j = j + 1
 }
 
 # summing up the total steps taken per day
-tab = aggregate(dt[,1], list(dt[,2]), sum)
+tab = aggregate(dt[,1], list(dt[,2]), sum, rm.na = TRUE)
 
-barplot(tab[,2], main="steps taken per day",
-   xlab="Days", ylab = "Total steps")
+hist(tab[,2], xlab = "number of steps", main = "Histogram of the total number of steps taken each day")
 ```
 
 ![](PA1_template_files/figure-html/missing_values-1.png) 
@@ -85,7 +93,7 @@ mean(tab[,2])
 ```
 
 ```
-## [1] 10766.19
+## [1] 10767.19
 ```
 
 ```r
@@ -94,8 +102,11 @@ median(tab[,2])
 ```
 
 ```
-## [1] 10766.19
+## [1] 10767.19
 ```
+
+As one can note, the shape of two histograms change a little, especially for the number of steps below 15000. The median value became slightly different from the estimates from the first part of the assignment. However, the mean value increase significantly. Hence, after imputing missing data, the total daily number of steps increase a little as one could expect.
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
 

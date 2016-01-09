@@ -23,10 +23,9 @@ dt = read.csv(dataset_path)
 ```{r steps_day}
 
 # summing up the total steps taken per day
-tab = aggregate(dt[!is.na(dt$steps), 1], list(dt[!is.na(dt$steps),2]), sum)
+tab = aggregate(dt[, 1], list(dt[,2]), sum, na.rm = TRUE)
 
-barplot(tab[,2], main="steps taken per day",
-   xlab="Days", ylab = "Total steps")
+hist(tab[,2], xlab = "number of steps", main = "Histogram of the total number of steps taken each day")
 
 # mean of the total number of steps taken per day
 mean(tab[,2])
@@ -43,6 +42,9 @@ tab = aggregate(dt[, 1], list(dt[ ,3]), mean, na.rm = T)
 
 plot(tab[,1],tab[,2], type="l", xlab = "Intervals", ylab = "Average")
 
+# Interval with maximum number of steps
+tab[which.max(tab[,2]),1]
+
 ```
 
 ## Imputing missing values
@@ -52,15 +54,16 @@ sum(is.na(dt$steps))
 
 j = 1
 for(i in tab[,1]){
+  # Filling in with the mean for jth 5-minute interval
   dt$steps[is.na(dt$steps) & dt$interval == i] = tab[j,2]
   j = j + 1
 }
 
 # summing up the total steps taken per day
-tab = aggregate(dt[,1], list(dt[,2]), sum)
+tab = aggregate(dt[,1], list(dt[,2]), sum, rm.na = TRUE)
 
-barplot(tab[,2], main="steps taken per day",
-   xlab="Days", ylab = "Total steps")
+hist(tab[,2], xlab = "number of steps", main = "Histogram of the total number of steps taken each day")
+
 
 # mean of the total number of steps taken per day
 mean(tab[,2])
@@ -69,6 +72,9 @@ mean(tab[,2])
 median(tab[,2])
 
 ```
+
+As one can note, the shape of two histograms change a little, especially for the number of steps below 15000. The median value became slightly different from the estimates from the first part of the assignment. However, the mean value increase significantly. Hence, after imputing missing data, the total daily number of steps increase a little as one could expect.
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```{r week}
